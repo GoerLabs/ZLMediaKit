@@ -8,8 +8,9 @@
  * may be found in the AUTHORS file in the root of the source tree.
  */
 
-#include <string.h>
 #include "mk_mediakit.h"
+#include <stdio.h>
+#include <string.h>
 #define LOG_LEV 4
 
 /**
@@ -17,14 +18,10 @@
  * @param regist 注册为1，注销为0
  * @param sender 该MediaSource对象
  */
-void API_CALL on_mk_media_changed(int regist,
-                                  const mk_media_source sender) {
-    log_printf(LOG_LEV,"%d %s/%s/%s/%s",(int)regist,
-              mk_media_source_get_schema(sender),
-              mk_media_source_get_vhost(sender),
-              mk_media_source_get_app(sender),
-              mk_media_source_get_stream(sender));
-
+void API_CALL on_mk_media_changed(int regist, const mk_media_source sender) {
+    log_printf(
+        LOG_LEV, "%d %s/%s/%s/%s", (int)regist, mk_media_source_get_schema(sender), mk_media_source_get_vhost(sender), mk_media_source_get_app(sender),
+        mk_media_source_get_stream(sender));
 }
 
 /**
@@ -34,24 +31,17 @@ void API_CALL on_mk_media_changed(int regist,
  * @param invoker 执行invoker返回鉴权结果
  * @param sender 该tcp客户端相关信息
  */
-void API_CALL on_mk_media_publish(const mk_media_info url_info,
-                                  const mk_publish_auth_invoker invoker,
-                                  const mk_sock_info sender) {
+void API_CALL on_mk_media_publish(const mk_media_info url_info, const mk_publish_auth_invoker invoker, const mk_sock_info sender) {
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d\n"
-               "%s/%s/%s/%s, url params: %s",
-               mk_sock_info_local_ip(sender,ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender,ip + 32),
-               mk_sock_info_peer_port(sender),
-               mk_media_info_get_schema(url_info),
-               mk_media_info_get_vhost(url_info),
-               mk_media_info_get_app(url_info),
-               mk_media_info_get_stream(url_info),
-               mk_media_info_get_params(url_info));
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d\n"
+        "%s/%s/%s/%s, url params: %s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender),
+        mk_media_info_get_schema(url_info), mk_media_info_get_vhost(url_info), mk_media_info_get_app(url_info), mk_media_info_get_stream(url_info),
+        mk_media_info_get_params(url_info));
 
-    //允许推流，并且允许转hls/mp4
+    // 允许推流，并且允许转hls/mp4
     mk_publish_auth_invoker_do(invoker, NULL, 1, 1);
 }
 
@@ -62,25 +52,18 @@ void API_CALL on_mk_media_publish(const mk_media_info url_info,
  * @param invoker 执行invoker返回鉴权结果
  * @param sender 播放客户端相关信息
  */
-void API_CALL on_mk_media_play(const mk_media_info url_info,
-                               const mk_auth_invoker invoker,
-                               const mk_sock_info sender) {
+void API_CALL on_mk_media_play(const mk_media_info url_info, const mk_auth_invoker invoker, const mk_sock_info sender) {
 
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d\n"
-               "%s/%s/%s/%s, url params: %s",
-               mk_sock_info_local_ip(sender,ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender,ip + 32),
-               mk_sock_info_peer_port(sender),
-               mk_media_info_get_schema(url_info),
-               mk_media_info_get_vhost(url_info),
-               mk_media_info_get_app(url_info),
-               mk_media_info_get_stream(url_info),
-               mk_media_info_get_params(url_info));
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d\n"
+        "%s/%s/%s/%s, url params: %s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender),
+        mk_media_info_get_schema(url_info), mk_media_info_get_vhost(url_info), mk_media_info_get_app(url_info), mk_media_info_get_stream(url_info),
+        mk_media_info_get_params(url_info));
 
-    //允许播放
+    // 允许播放
     mk_auth_invoker_do(invoker, NULL);
 }
 
@@ -91,21 +74,15 @@ void API_CALL on_mk_media_play(const mk_media_info url_info,
  * @return 1 直接关闭
  *         0 等待流注册
  */
-int API_CALL on_mk_media_not_found(const mk_media_info url_info,
-                                    const mk_sock_info sender) {
+int API_CALL on_mk_media_not_found(const mk_media_info url_info, const mk_sock_info sender) {
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d\n"
-               "%s/%s/%s/%s, url params: %s",
-               mk_sock_info_local_ip(sender,ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender,ip + 32),
-               mk_sock_info_peer_port(sender),
-               mk_media_info_get_schema(url_info),
-               mk_media_info_get_vhost(url_info),
-               mk_media_info_get_app(url_info),
-               mk_media_info_get_stream(url_info),
-               mk_media_info_get_params(url_info));
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d\n"
+        "%s/%s/%s/%s, url params: %s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender),
+        mk_media_info_get_schema(url_info), mk_media_info_get_vhost(url_info), mk_media_info_get_app(url_info), mk_media_info_get_stream(url_info),
+        mk_media_info_get_params(url_info));
     return 0;
 }
 
@@ -114,16 +91,13 @@ int API_CALL on_mk_media_not_found(const mk_media_info url_info,
  * @param sender 该MediaSource对象
  */
 void API_CALL on_mk_media_no_reader(const mk_media_source sender) {
-    log_printf(LOG_LEV,
-               "%s/%s/%s/%s",
-               mk_media_source_get_schema(sender),
-               mk_media_source_get_vhost(sender),
-               mk_media_source_get_app(sender),
-               mk_media_source_get_stream(sender));
+    log_printf(
+        LOG_LEV, "%s/%s/%s/%s", mk_media_source_get_schema(sender), mk_media_source_get_vhost(sender), mk_media_source_get_app(sender),
+        mk_media_source_get_stream(sender));
 }
 
-//按照json转义规则转义webrtc answer sdp
-static char *escape_string(const char *ptr){
+// 按照json转义规则转义webrtc answer sdp
+static char *escape_string(const char *ptr) {
     char *escaped = malloc(2 * strlen(ptr));
     char *ptr_escaped = escaped;
     while (1) {
@@ -157,7 +131,7 @@ static char *escape_string(const char *ptr){
 }
 
 static void on_mk_webrtc_get_answer_sdp_func(void *user_data, const char *answer, const char *err) {
-    const char *response_header[] = { "Content-Type", "application/json", "Access-Control-Allow-Origin", "*" , NULL};
+    const char *response_header[] = { "Content-Type", "application/json", "Access-Control-Allow-Origin", "*", NULL };
     if (answer) {
         answer = escape_string(answer);
     }
@@ -165,20 +139,22 @@ static void on_mk_webrtc_get_answer_sdp_func(void *user_data, const char *answer
     char *response_content = (char *)malloc(len);
 
     if (answer) {
-        snprintf(response_content, len,
-                 "{"
-                 "\"sdp\":\"%s\","
-                 "\"type\":\"answer\","
-                 "\"code\":0"
-                 "}",
-                 answer);
+        snprintf(
+            response_content, len,
+            "{"
+            "\"sdp\":\"%s\","
+            "\"type\":\"answer\","
+            "\"code\":0"
+            "}",
+            answer);
     } else {
-        snprintf(response_content, len,
-                 "{"
-                 "\"msg\":\"%s\","
-                 "\"code\":-1"
-                 "}",
-                 err);
+        snprintf(
+            response_content, len,
+            "{"
+            "\"msg\":\"%s\","
+            "\"code\":-1"
+            "}",
+            err);
     }
 
     mk_http_response_invoker_do_string(user_data, 200, response_header, response_content);
@@ -195,33 +171,24 @@ static void on_mk_webrtc_get_answer_sdp_func(void *user_data, const char *answer
  * @param consumed 置1则说明我们要处理该事件
  * @param sender http客户端相关信息
  */
-//测试url : http://127.0.0.1/api/test
-void API_CALL on_mk_http_request(const mk_parser parser,
-                                 const mk_http_response_invoker invoker,
-                                 int *consumed,
-                                 const mk_sock_info sender) {
+// 测试url : http://127.0.0.1/api/test
+void API_CALL on_mk_http_request(const mk_parser parser, const mk_http_response_invoker invoker, int *consumed, const mk_sock_info sender) {
 
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d\n"
-               "%s %s?%s %s\n"
-               "User-Agent: %s\n"
-               "%s",
-               mk_sock_info_local_ip(sender,ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender,ip + 32),
-               mk_sock_info_peer_port(sender),
-               mk_parser_get_method(parser),
-               mk_parser_get_url(parser),
-               mk_parser_get_url_params(parser),
-               mk_parser_get_tail(parser),
-               mk_parser_get_header(parser, "User-Agent"),
-               mk_parser_get_content(parser,NULL));
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d\n"
+        "%s %s?%s %s\n"
+        "User-Agent: %s\n"
+        "%s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender),
+        mk_parser_get_method(parser), mk_parser_get_url(parser), mk_parser_get_url_params(parser), mk_parser_get_tail(parser),
+        mk_parser_get_header(parser, "User-Agent"), mk_parser_get_content(parser, NULL));
 
     const char *url = mk_parser_get_url(parser);
     *consumed = 1;
 
-    //拦截api: /api/test
+    // 拦截api: /api/test
     if (strcmp(url, "/api/test") == 0) {
         const char *response_header[] = { "Content-Type", "text/html", NULL };
         const char *content = "<html>"
@@ -238,14 +205,15 @@ void API_CALL on_mk_http_request(const mk_parser parser,
         mk_http_response_invoker_do(invoker, 200, response_header, body);
         mk_http_body_release(body);
     } else if (strcmp(url, "/index/api/webrtc") == 0) {
-        //拦截api: /index/api/webrtc
+        // 拦截api: /index/api/webrtc
         char rtc_url[1024];
-        snprintf(rtc_url, sizeof(rtc_url), "rtc://%s/%s/%s?%s", mk_parser_get_header(parser, "Host"),
-                 mk_parser_get_url_param(parser, "app"), mk_parser_get_url_param(parser, "stream"),
-                 mk_parser_get_url_params(parser));
+        snprintf(
+            rtc_url, sizeof(rtc_url), "rtc://%s/%s/%s?%s", mk_parser_get_header(parser, "Host"), mk_parser_get_url_param(parser, "app"),
+            mk_parser_get_url_param(parser, "stream"), mk_parser_get_url_params(parser));
 
-        mk_webrtc_get_answer_sdp(mk_http_response_invoker_clone(invoker), on_mk_webrtc_get_answer_sdp_func,
-                                 mk_parser_get_url_param(parser, "type"), mk_parser_get_content(parser, NULL), rtc_url);
+        mk_webrtc_get_answer_sdp(
+            mk_http_response_invoker_clone(invoker), on_mk_webrtc_get_answer_sdp_func, mk_parser_get_url_param(parser, "type"),
+            mk_parser_get_content(parser, NULL), rtc_url);
     } else {
         *consumed = 0;
         return;
@@ -260,31 +228,20 @@ void API_CALL on_mk_http_request(const mk_parser parser,
  * @param invoker 执行invoker返回本次访问文件的结果
  * @param sender http客户端相关信息
  */
-void API_CALL on_mk_http_access(const mk_parser parser,
-                                const char *path,
-                                int is_dir,
-                                const mk_http_access_path_invoker invoker,
-                                const mk_sock_info sender) {
+void API_CALL on_mk_http_access(const mk_parser parser, const char *path, int is_dir, const mk_http_access_path_invoker invoker, const mk_sock_info sender) {
 
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d, path: %s ,is_dir: %d\n"
-               "%s %s?%s %s\n"
-               "User-Agent: %s\n"
-               "%s",
-               mk_sock_info_local_ip(sender, ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender, ip + 32),
-               mk_sock_info_peer_port(sender),
-               path,(int)is_dir,
-               mk_parser_get_method(parser),
-               mk_parser_get_url(parser),
-               mk_parser_get_url_params(parser),
-               mk_parser_get_tail(parser),
-               mk_parser_get_header(parser,"User-Agent"),
-               mk_parser_get_content(parser,NULL));
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d, path: %s ,is_dir: %d\n"
+        "%s %s?%s %s\n"
+        "User-Agent: %s\n"
+        "%s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender), path,
+        (int)is_dir, mk_parser_get_method(parser), mk_parser_get_url(parser), mk_parser_get_url_params(parser), mk_parser_get_tail(parser),
+        mk_parser_get_header(parser, "User-Agent"), mk_parser_get_content(parser, NULL));
 
-    //有访问权限,每次访问文件都需要鉴权
+    // 有访问权限,每次访问文件都需要鉴权
     mk_http_access_path_invoker_do(invoker, NULL, NULL, 0);
 }
 
@@ -295,28 +252,19 @@ void API_CALL on_mk_http_access(const mk_parser parser,
  * @param path 文件绝对路径,覆盖之可以重定向到其他文件
  * @param sender http客户端相关信息
  */
-void API_CALL on_mk_http_before_access(const mk_parser parser,
-                                       char *path,
-                                       const mk_sock_info sender) {
+void API_CALL on_mk_http_before_access(const mk_parser parser, char *path, const mk_sock_info sender) {
 
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d, path: %s\n"
-               "%s %s?%s %s\n"
-               "User-Agent: %s\n"
-               "%s",
-               mk_sock_info_local_ip(sender,ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender,ip + 32),
-               mk_sock_info_peer_port(sender),
-               path,
-               mk_parser_get_method(parser),
-               mk_parser_get_url(parser),
-               mk_parser_get_url_params(parser),
-               mk_parser_get_tail(parser),
-               mk_parser_get_header(parser, "User-Agent"),
-               mk_parser_get_content(parser,NULL));
-    //覆盖path的值可以重定向文件
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d, path: %s\n"
+        "%s %s?%s %s\n"
+        "User-Agent: %s\n"
+        "%s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender), path,
+        mk_parser_get_method(parser), mk_parser_get_url(parser), mk_parser_get_url_params(parser), mk_parser_get_tail(parser),
+        mk_parser_get_header(parser, "User-Agent"), mk_parser_get_content(parser, NULL));
+    // 覆盖path的值可以重定向文件
 }
 
 /**
@@ -325,24 +273,17 @@ void API_CALL on_mk_http_before_access(const mk_parser parser,
  * @param invoker 执行invoker返回是否需要rtsp专属认证
  * @param sender rtsp客户端相关信息
  */
-void API_CALL on_mk_rtsp_get_realm(const mk_media_info url_info,
-                                   const mk_rtsp_get_realm_invoker invoker,
-                                   const mk_sock_info sender) {
+void API_CALL on_mk_rtsp_get_realm(const mk_media_info url_info, const mk_rtsp_get_realm_invoker invoker, const mk_sock_info sender) {
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d\n"
-               "%s/%s/%s/%s, url params: %s",
-               mk_sock_info_local_ip(sender,ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender,ip + 32),
-               mk_sock_info_peer_port(sender),
-               mk_media_info_get_schema(url_info),
-               mk_media_info_get_vhost(url_info),
-               mk_media_info_get_app(url_info),
-               mk_media_info_get_stream(url_info),
-               mk_media_info_get_params(url_info));
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d\n"
+        "%s/%s/%s/%s, url params: %s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender),
+        mk_media_info_get_schema(url_info), mk_media_info_get_vhost(url_info), mk_media_info_get_app(url_info), mk_media_info_get_stream(url_info),
+        mk_media_info_get_params(url_info));
 
-    //rtsp播放默认鉴权
+    // rtsp播放默认鉴权
     mk_rtsp_get_realm_invoker_do(invoker, "zlmediakit");
 }
 
@@ -356,77 +297,58 @@ void API_CALL on_mk_rtsp_get_realm(const mk_media_info url_info,
  * @param invoker  执行invoker返回rtsp专属认证的密码
  * @param sender rtsp客户端信息
  */
-void API_CALL on_mk_rtsp_auth(const mk_media_info url_info,
-                              const char *realm,
-                              const char *user_name,
-                              int must_no_encrypt,
-                              const mk_rtsp_auth_invoker invoker,
-                              const mk_sock_info sender) {
+void API_CALL on_mk_rtsp_auth(
+    const mk_media_info url_info, const char *realm, const char *user_name, int must_no_encrypt, const mk_rtsp_auth_invoker invoker,
+    const mk_sock_info sender) {
 
     char ip[64];
-    log_printf(LOG_LEV,
-               "client info, local: %s:%d, peer: %s:%d\n"
-               "%s/%s/%s/%s, url params: %s\n"
-               "realm: %s, user_name: %s, must_no_encrypt: %d",
-               mk_sock_info_local_ip(sender,ip),
-               mk_sock_info_local_port(sender),
-               mk_sock_info_peer_ip(sender,ip + 32),
-               mk_sock_info_peer_port(sender),
-               mk_media_info_get_schema(url_info),
-               mk_media_info_get_vhost(url_info),
-               mk_media_info_get_app(url_info),
-               mk_media_info_get_stream(url_info),
-               mk_media_info_get_params(url_info),
-               realm,user_name,(int)must_no_encrypt);
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d\n"
+        "%s/%s/%s/%s, url params: %s\n"
+        "realm: %s, user_name: %s, must_no_encrypt: %d",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender),
+        mk_media_info_get_schema(url_info), mk_media_info_get_vhost(url_info), mk_media_info_get_app(url_info), mk_media_info_get_stream(url_info),
+        mk_media_info_get_params(url_info), realm, user_name, (int)must_no_encrypt);
 
-    //rtsp播放用户名跟密码一致
-    mk_rtsp_auth_invoker_do(invoker,0,user_name);
+    // rtsp播放用户名跟密码一致
+    mk_rtsp_auth_invoker_do(invoker, 0, user_name);
 }
 
 /**
  * 录制mp4分片文件成功后广播
  */
 void API_CALL on_mk_record_mp4(const mk_mp4_info mp4) {
-    log_printf(LOG_LEV,
-               "\nstart_time: %d\n"
-               "time_len: %d\n"
-               "file_size: %d\n"
-               "file_path: %s\n"
-               "file_name: %s\n"
-               "folder: %s\n"
-               "url: %s\n"
-               "vhost: %s\n"
-               "app: %s\n"
-               "stream: %s\n",
-               mk_mp4_info_get_start_time(mp4),
-               mk_mp4_info_get_time_len(mp4),
-               mk_mp4_info_get_file_size(mp4),
-               mk_mp4_info_get_file_path(mp4),
-               mk_mp4_info_get_file_name(mp4),
-               mk_mp4_info_get_folder(mp4),
-               mk_mp4_info_get_url(mp4),
-               mk_mp4_info_get_vhost(mp4),
-               mk_mp4_info_get_app(mp4),
-               mk_mp4_info_get_stream(mp4));
+    log_printf(
+        LOG_LEV,
+        "\nstart_time: %d\n"
+        "time_len: %d\n"
+        "file_size: %d\n"
+        "file_path: %s\n"
+        "file_name: %s\n"
+        "folder: %s\n"
+        "url: %s\n"
+        "vhost: %s\n"
+        "app: %s\n"
+        "stream: %s\n",
+        mk_mp4_info_get_start_time(mp4), mk_mp4_info_get_time_len(mp4), mk_mp4_info_get_file_size(mp4), mk_mp4_info_get_file_path(mp4),
+        mk_mp4_info_get_file_name(mp4), mk_mp4_info_get_folder(mp4), mk_mp4_info_get_url(mp4), mk_mp4_info_get_vhost(mp4), mk_mp4_info_get_app(mp4),
+        mk_mp4_info_get_stream(mp4));
 }
 
 /**
  * shell登录鉴权
  */
-void API_CALL on_mk_shell_login(const char *user_name,
-                                const char *passwd,
-                                const mk_auth_invoker invoker,
-                                const mk_sock_info sender) {
+void API_CALL on_mk_shell_login(const char *user_name, const char *passwd, const mk_auth_invoker invoker, const mk_sock_info sender) {
 
     char ip[64];
-    log_printf(LOG_LEV,"client info, local: %s:%d, peer: %s:%d\n"
-              "user_name: %s, passwd: %s",
-              mk_sock_info_local_ip(sender,ip),
-              mk_sock_info_local_port(sender),
-              mk_sock_info_peer_ip(sender,ip + 32),
-              mk_sock_info_peer_port(sender),
-              user_name, passwd);
-    //允许登录shell
+    log_printf(
+        LOG_LEV,
+        "client info, local: %s:%d, peer: %s:%d\n"
+        "user_name: %s, passwd: %s",
+        mk_sock_info_local_ip(sender, ip), mk_sock_info_local_port(sender), mk_sock_info_peer_ip(sender, ip + 32), mk_sock_info_peer_port(sender), user_name,
+        passwd);
+    // 允许登录shell
     mk_auth_invoker_do(invoker, NULL);
 }
 
@@ -439,42 +361,31 @@ void API_CALL on_mk_shell_login(const char *user_name,
  * @param peer_ip 客户端ip
  * @param peer_port 客户端端口号
  */
-void API_CALL on_mk_flow_report(const mk_media_info url_info,
-                                size_t total_bytes,
-                                size_t total_seconds,
-                                int is_player,
-                                const mk_sock_info sender) {
+void API_CALL on_mk_flow_report(const mk_media_info url_info, size_t total_bytes, size_t total_seconds, int is_player, const mk_sock_info sender) {
     char ip[64];
-    log_printf(LOG_LEV,"%s/%s/%s/%s, url params: %s,"
-              "total_bytes: %d, total_seconds: %d, is_player: %d, peer_ip:%s, peer_port:%d",
-               mk_media_info_get_schema(url_info),
-               mk_media_info_get_vhost(url_info),
-               mk_media_info_get_app(url_info),
-               mk_media_info_get_stream(url_info),
-               mk_media_info_get_params(url_info),
-              (int)total_bytes,
-              (int)total_seconds,
-              (int)is_player,
-              mk_sock_info_peer_ip(sender,ip),
-              (int)mk_sock_info_peer_port(sender));
+    log_printf(
+        LOG_LEV,
+        "%s/%s/%s/%s, url params: %s,"
+        "total_bytes: %d, total_seconds: %d, is_player: %d, peer_ip:%s, peer_port:%d",
+        mk_media_info_get_schema(url_info), mk_media_info_get_vhost(url_info), mk_media_info_get_app(url_info), mk_media_info_get_stream(url_info),
+        mk_media_info_get_params(url_info), (int)total_bytes, (int)total_seconds, (int)is_player, mk_sock_info_peer_ip(sender, ip),
+        (int)mk_sock_info_peer_port(sender));
 }
 
 int main(int argc, char *argv[]) {
     char *ini_path = mk_util_get_exe_dir("c_api.ini");
     char *ssl_path = mk_util_get_exe_dir("ssl.p12");
 
-    mk_config config = {
-            .ini = ini_path,
-            .ini_is_path = 1,
-            .log_level = 0,
-            .log_mask = LOG_CONSOLE,
-            .log_file_path = NULL,
-            .log_file_days = 0,
-            .ssl = ssl_path,
-            .ssl_is_path = 1,
-            .ssl_pwd = NULL,
-            .thread_num = 0
-    };
+    mk_config config = { .ini = ini_path,
+                         .ini_is_path = 1,
+                         .log_level = 0,
+                         .log_mask = LOG_CONSOLE,
+                         .log_file_path = NULL,
+                         .log_file_days = 0,
+                         .ssl = ssl_path,
+                         .ssl_is_path = 1,
+                         .ssl_pwd = NULL,
+                         .thread_num = 0 };
     mk_env_init(&config);
     free(ini_path);
     free(ssl_path);
@@ -488,21 +399,19 @@ int main(int argc, char *argv[]) {
     mk_rtc_server_start(8000);
     mk_srt_server_start(9000);
 
-    mk_events events = {
-            .on_mk_media_changed = on_mk_media_changed,
-            .on_mk_media_publish = on_mk_media_publish,
-            .on_mk_media_play = on_mk_media_play,
-            .on_mk_media_not_found = on_mk_media_not_found,
-            .on_mk_media_no_reader = on_mk_media_no_reader,
-            .on_mk_http_request = on_mk_http_request,
-            .on_mk_http_access = on_mk_http_access,
-            .on_mk_http_before_access = on_mk_http_before_access,
-            .on_mk_rtsp_get_realm = on_mk_rtsp_get_realm,
-            .on_mk_rtsp_auth = on_mk_rtsp_auth,
-            .on_mk_record_mp4 = on_mk_record_mp4,
-            .on_mk_shell_login = on_mk_shell_login,
-            .on_mk_flow_report = on_mk_flow_report
-    };
+    mk_events events = { .on_mk_media_changed = on_mk_media_changed,
+                         .on_mk_media_publish = on_mk_media_publish,
+                         .on_mk_media_play = on_mk_media_play,
+                         .on_mk_media_not_found = on_mk_media_not_found,
+                         .on_mk_media_no_reader = on_mk_media_no_reader,
+                         .on_mk_http_request = on_mk_http_request,
+                         .on_mk_http_access = on_mk_http_access,
+                         .on_mk_http_before_access = on_mk_http_before_access,
+                         .on_mk_rtsp_get_realm = on_mk_rtsp_get_realm,
+                         .on_mk_rtsp_auth = on_mk_rtsp_auth,
+                         .on_mk_record_mp4 = on_mk_record_mp4,
+                         .on_mk_shell_login = on_mk_shell_login,
+                         .on_mk_flow_report = on_mk_flow_report };
     mk_events_listen(&events);
     log_info("media server %s", "stared!");
 

@@ -8,34 +8,25 @@
  * may be found in the AUTHORS file in the root of the source tree.
  */
 
-#include <string.h>
 #include "mk_mediakit.h"
+#include <string.h>
 
 typedef struct {
     mk_sem sem;
     mk_http_requester requester;
 } Context;
 
-static void API_CALL on_requester_complete(void *user_data, int code, const char *err_msg){
+static void API_CALL on_requester_complete(void *user_data, int code, const char *err_msg) {
     Context *ctx = (Context *)user_data;
     log_debug("code: %d %s", code, err_msg);
     size_t res_len = 0;
-    log_debug("response: %s %s", mk_http_requester_get_response_status(ctx->requester),
-              mk_http_requester_get_response_body(ctx->requester, &res_len));
+    log_debug("response: %s %s", mk_http_requester_get_response_status(ctx->requester), mk_http_requester_get_response_body(ctx->requester, &res_len));
     mk_sem_post(ctx->sem, 1);
 }
 
 int main(int argc, char *argv[]) {
-    mk_config config = {
-            .ini = NULL,
-            .ini_is_path = 0,
-            .log_level = 0,
-            .log_mask = LOG_CONSOLE,
-            .ssl = NULL,
-            .ssl_is_path = 1,
-            .ssl_pwd = NULL,
-            .thread_num = 0
-    };
+    mk_config config
+        = { .ini = NULL, .ini_is_path = 0, .log_level = 0, .log_mask = LOG_CONSOLE, .ssl = NULL, .ssl_is_path = 1, .ssl_pwd = NULL, .thread_num = 0 };
     mk_env_init(&config);
 
     mk_http_requester requester = mk_http_requester_create();
@@ -47,12 +38,12 @@ int main(int argc, char *argv[]) {
 
     mk_sem sem = mk_sem_create();
 
-    Context ctx = {.requester = requester, .sem = sem};
+    Context ctx = { .requester = requester, .sem = sem };
 
     mk_http_requester_set_cb(requester, on_requester_complete, &ctx);
     mk_http_requester_start(requester, "http://www.baidu.com/baidu", 10);
 
-    //等待http请求完毕
+    // 等待http请求完毕
     mk_sem_wait(sem);
 
     mk_sem_release(sem);
