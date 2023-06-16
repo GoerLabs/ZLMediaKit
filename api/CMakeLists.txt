@@ -30,9 +30,11 @@ file(GLOB API_SRC_LIST
 
 set(LINK_LIBRARIES ${MK_LINK_LIBRARIES})
 
+set(MK_LIBRARY_NAME mkapi)
+
 if(IOS)
-  add_library(mk_api STATIC ${API_SRC_LIST})
-  target_link_libraries(mk_api
+  add_library(${MK_LIBRARY_NAME} STATIC ${API_SRC_LIST})
+  target_link_libraries(${MK_LIBRARY_NAME}
     PRIVATE ${LINK_LIBRARIES})
   return()
 endif ()
@@ -44,15 +46,15 @@ if (MSVC)
 endif ()
 
 if(ENABLE_API_STATIC_LIB)
-  add_library(mk_api STATIC ${API_SRC_LIST})
+  add_library(${MK_LIBRARY_NAME} STATIC ${API_SRC_LIST})
   list(APPEND COMPILE_DEFINITIONS MediaKitApi_STATIC)
 else()
-  add_library(mk_api SHARED ${API_SRC_LIST})
+  add_library(${MK_LIBRARY_NAME} SHARED ${API_SRC_LIST})
 endif()
 
-target_compile_definitions(mk_api
+target_compile_definitions(${MK_LIBRARY_NAME}
   PRIVATE ${COMPILE_DEFINITIONS})
-target_include_directories(mk_api
+target_include_directories(${MK_LIBRARY_NAME}
   PRIVATE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
@@ -61,26 +63,38 @@ target_include_directories(mk_api
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-  target_link_libraries(mk_api -Wl,--start-group ${LINK_LIBRARIES} -Wl,--end-group)
+  target_link_libraries(${MK_LIBRARY_NAME} -Wl,--start-group ${LINK_LIBRARIES} -Wl,--end-group)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
-  target_link_libraries(mk_api log -Wl,--start-group ${LINK_LIBRARIES} -Wl,--end-group)
+  target_link_libraries(${MK_LIBRARY_NAME} log -Wl,--start-group ${LINK_LIBRARIES} -Wl,--end-group)
 else()
-  target_link_libraries(mk_api ${LINK_LIBRARIES})
+  target_link_libraries(${MK_LIBRARY_NAME} ${LINK_LIBRARIES})
 endif()
 
-generate_export_header(mk_api
+generate_export_header(${MK_LIBRARY_NAME}
   EXPORT_MACRO_NAME API_EXPORT
   BASE_NAME MK_API
   STATIC_DEFINE MediaKitApi_STATIC
   EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/mk_export.h")
 
 file(GLOB API_HEADER_LIST include/*.h ${CMAKE_CURRENT_BINARY_DIR}/*.h)
+
 install(FILES ${API_HEADER_LIST}
-  DESTINATION ${INSTALL_PATH_INCLUDE})
-install(TARGETS mk_api
+  DESTINATION ${INSTALL_PATH_INCLUDE}/mkapi)
+
+install(TARGETS ${MK_LIBRARY_NAME}
   ARCHIVE DESTINATION ${INSTALL_PATH_LIB}
   LIBRARY DESTINATION ${INSTALL_PATH_LIB}
   RUNTIME DESTINATION ${INSTALL_PATH_RUNTIME})
+
+include(GNUInstallDirs)
+
+# Pkg-config
+configure_file(mkapi.pc.in
+    "${PROJECT_BINARY_DIR}/mkapi.pc" @ONLY)
+
+install(FILES
+"${PROJECT_BINARY_DIR}/mkapi.pc"
+DESTINATION ${INSTALL_PATH_LIB}/pkgconfig)
 
 if (ENABLE_TESTS)
   add_subdirectory(tests)
